@@ -2,49 +2,105 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>주식 초보자를 위한 밸류에이션 쉽게 배우기</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="PER, PBR, PSR, EV/EBITDA를 중학생도 이해할 수 있게 설명하는 실전 주식 투자 전자책">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
-    .sidebar {
-      font-size: 15px;
-    }
-    .app-name {
-      font-size: 1.1em;
-      font-weight: 600;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 820px; margin: 0 auto; padding: 20px; line-height: 1.75; background: #f8fafc; color: #1e293b; }
+    h1, h2, h3 { color: #0f172a; }
+    .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    .sidebar { position: fixed; left: 20px; top: 20px; width: 250px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgb(0 0 0 / 0.1); font-size: 14px; max-height: 90vh; overflow: auto; }
+    .main { margin-left: 290px; }
+    .nav a { display: block; padding: 6px 10px; text-decoration: none; color: #475569; border-radius: 4px; margin-bottom: 2px; }
+    .nav a:hover { background: #e0f2fe; color: #0369a1; }
+    .nav a.active { background: #bae6fd; color: #0369a1; font-weight: 600; }
+    .chapter { margin-bottom: 40px; }
+    @media (max-width: 900px) { .sidebar { position: static; width: 100%; margin-bottom: 30px; } .main { margin-left: 0; } }
+    pre { background: #f1f5f9; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    a { color: #0284c8; }
   </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div class="sidebar">
+    <h3 style="margin-top:0">📖 목차</h3>
+    <div class="nav" id="nav"></div>
+    <hr style="margin: 15px 0">
+    <small><a href="https://github.com/tone7718-droid/Stock-Picker/tree/ebook" target="_blank">GitHub 원본 →</a></small>
+  </div>
+
+  <div class="main">
+    <div class="container" id="content">
+      <h1>주식 초보자를 위한 밸류에이션 쉽게 배우기</h1>
+      <p><strong>PER, PBR, PSR, EV/EBITDA + 실전 투자 지식</strong></p>
+      <p>왼쪽(또는 위)에서 챕터를 선택하세요.</p>
+    </div>
+  </div>
 
   <script>
-    window.$docsify = {
-      name: '주식 밸류에이션 가이드',
-      repo: 'https://github.com/tone7718-droid/Stock-Picker',
-      loadSidebar: true,
-      subMaxLevel: 2,
-      search: {
-        maxAge: 86400000,
-        paths: 'auto',
-        placeholder: '검색...',
-        noData: '결과가 없습니다.'
-      },
-      // 상대 경로로 chapters 로드
-      basePath: '/book/',
-      // 또는 root에서 chapters를 직접 참조하려면 아래 주석 해제
-      // basePath: '/',
-      auto2top: true,
-      themeColor: '#2563eb',
-      // 한글 지원을 위한 플러그인 힌트
-    }
-  </script>
+    const chapters = [
+      { id: '01', title: '01. 서론', file: '01-서론.md' },
+      { id: '02', title: '02. 기본 개념', file: '02-기본개념.md' },
+      { id: '03', title: '03. PER', file: '03-PER.md' },
+      { id: '04', title: '04. PBR', file: '04-PBR.md' },
+      { id: '05', title: '05. PSR', file: '05-PSR.md' },
+      { id: '06', title: '06. EV/EBITDA', file: '06-EV-EBITDA.md' },
+      { id: '07', title: '07. 지표 조합하기', file: '07-조합하기.md' },
+      { id: '08', title: '08. 실전 예시', file: '08-실전예시.md' },
+      { id: '09', title: '09. 함정', file: '09-함정.md' },
+      { id: '10', title: '10. 체크리스트', file: '10-체크리스트.md' },
+      { id: '11', title: '11. 재무제표', file: '11-재무제표-초보자.md' },
+      { id: '12', title: '12. 정성적 분석', file: '12-정성적-분석.md' },
+      { id: '13', title: '13. 위험 관리', file: '13-위험관리와-포지션.md' },
+      { id: '14', title: '14. 매수와 매도', file: '14-매수와-매도.md' },
+      { id: '15', title: '15. 심리적 실수', file: '15-심리적-실수.md' },
+      { id: '16', title: '16. 투자 원칙 10가지', file: '16-투자-원칙.md' }
+    ];
 
-  <!-- Docsify -->
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-  
-  <!-- 검색 플러그인 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+    const nav = document.getElementById('nav');
+    const contentEl = document.getElementById('content');
+
+    chapters.forEach(ch => {
+      const a = document.createElement('a');
+      a.href = '#' + ch.id;
+      a.textContent = ch.title;
+      a.onclick = (e) => {
+        e.preventDefault();
+        loadChapter(ch);
+        document.querySelectorAll('.nav a').forEach(el => el.classList.remove('active'));
+        a.classList.add('active');
+      };
+      nav.appendChild(a);
+    });
+
+    async function loadChapter(ch) {
+      try {
+        // 상대 경로: book/index.html에서 ../chapters/ 로 접근
+        const res = await fetch(`../chapters/${ch.file}`);
+        if (!res.ok) throw new Error('fetch failed');
+        const md = await res.text();
+        const html = marked.parse(md);
+        contentEl.innerHTML = `<div class="chapter"><h1>${ch.title}</h1>${html}</div>`;
+        window.scrollTo(0, 0);
+      } catch(e) {
+        // Fallback to raw GitHub if direct fetch fails (CORS or path issue)
+        const rawUrl = `https://raw.githubusercontent.com/tone7718-droid/Stock-Picker/ebook/chapters/${ch.file}`;
+        const res = await fetch(rawUrl);
+        const md = await res.text();
+        const html = marked.parse(md);
+        contentEl.innerHTML = `<div class="chapter"><h1>${ch.title}</h1>${html}</div>`;
+      }
+    }
+
+    window.onload = () => {
+      loadChapter(chapters[0]);
+      if (nav.firstChild) nav.firstChild.classList.add('active');
+    };
+
+    window.onhashchange = () => {
+      const hash = location.hash.replace('#', '');
+      const found = chapters.find(c => c.id === hash);
+      if (found) loadChapter(found);
+    };
+  </script>
 </body>
 </html>
