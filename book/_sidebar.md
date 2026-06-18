@@ -26,4 +26,4 @@
 
 ---
 
-[GitHub로 돌아가기](https://github.com/tone7718-droid/Stock-Picker/tree/ebook)
+[GitHub로 돌아가기](https://github.com/tone7718-droid/Stock-Picker)
