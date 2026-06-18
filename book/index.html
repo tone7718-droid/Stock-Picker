@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>주식 초보자를 위한 밸류에이션 쉽게 배우기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PER, PBR, PSR, EV/EBITDA를 중학생도 이해할 수 있게 설명하는 실전 주식 투자 전자책">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+  <style>
+    .sidebar {
+      font-size: 15px;
+    }
+    .app-name {
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    window.$docsify = {
+      name: '주식 밸류에이션 가이드',
+      repo: 'https://github.com/tone7718-droid/Stock-Picker',
+      loadSidebar: true,
+      subMaxLevel: 2,
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: '검색...',
+        noData: '결과가 없습니다.'
+      },
+      // 상대 경로로 chapters 로드
+      basePath: '/book/',
+      // 또는 root에서 chapters를 직접 참조하려면 아래 주석 해제
+      // basePath: '/',
+      auto2top: true,
+      themeColor: '#2563eb',
+      // 한글 지원을 위한 플러그인 힌트
+    }
+  </script>
+
+  <!-- Docsify -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+  
+  <!-- 검색 플러그인 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+</body>
+</html>
