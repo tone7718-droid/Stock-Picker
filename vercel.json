@@ -1,0 +1,8 @@
+{
+  "buildCommand": "",
+  "outputDirectory": "book",
+  "framework": null,
+  "routes": [
+    { "handle": "filesystem" }
+  ]
+}
