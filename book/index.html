@@ -18,6 +18,7 @@
     @media (max-width: 900px) { .sidebar { position: static; width: 100%; margin-bottom: 30px; } .main { margin-left: 0; } }
     pre { background: #f1f5f9; padding: 12px; border-radius: 6px; overflow-x: auto; }
     a { color: #0284c8; }
+    .loading { color: #64748b; font-style: italic; }
   </style>
 </head>
 <body>
@@ -25,14 +26,14 @@
     <h3 style="margin-top:0">📖 목차</h3>
     <div class="nav" id="nav"></div>
     <hr style="margin: 15px 0">
-    <small><a href="https://github.com/tone7718-droid/Stock-Picker/tree/ebook" target="_blank">GitHub 원본 →</a></small>
+    <small><a href="https://github.com/tone7718-droid/Stock-Picker" target="_blank">GitHub 원본 →</a></small>
   </div>
 
   <div class="main">
     <div class="container" id="content">
       <h1>주식 초보자를 위한 밸류에이션 쉽게 배우기</h1>
       <p><strong>PER, PBR, PSR, EV/EBITDA + 실전 투자 지식</strong></p>
-      <p>왼쪽(또는 위)에서 챕터를 선택하세요.</p>
+      <p>왼쪽(또는 위)에서 챕터를 선택하세요. (모바일은 위쪽 목록)</p>
     </div>
   </div>
 
@@ -59,6 +60,9 @@
     const nav = document.getElementById('nav');
     const contentEl = document.getElementById('content');
 
+    // Always use main branch raw GitHub (reliable on Vercel)
+    const RAW_BASE = 'https://raw.githubusercontent.com/tone7718-droid/Stock-Picker/main/chapters/';
+
     chapters.forEach(ch => {
       const a = document.createElement('a');
       a.href = '#' + ch.id;
@@ -73,34 +77,51 @@
     });
 
     async function loadChapter(ch) {
+      contentEl.innerHTML = `<div class="chapter"><h1>${ch.title}</h1><p class="loading">로딩 중...</p></div>`;
+
       try {
-        // 상대 경로: book/index.html에서 ../chapters/ 로 접근
-        const res = await fetch(`../chapters/${ch.file}`);
-        if (!res.ok) throw new Error('fetch failed');
+        const res = await fetch(RAW_BASE + ch.file);
+        if (!res.ok) throw new Error('Failed to load');
         const md = await res.text();
         const html = marked.parse(md);
         contentEl.innerHTML = `<div class="chapter"><h1>${ch.title}</h1>${html}</div>`;
         window.scrollTo(0, 0);
       } catch(e) {
-        // Fallback to raw GitHub if direct fetch fails (CORS or path issue)
-        const rawUrl = `https://raw.githubusercontent.com/tone7718-droid/Stock-Picker/ebook/chapters/${ch.file}`;
-        const res = await fetch(rawUrl);
-        const md = await res.text();
-        const html = marked.parse(md);
-        contentEl.innerHTML = `<div class="chapter"><h1>${ch.title}</h1>${html}</div>`;
+        contentEl.innerHTML = `<div class="chapter"><h1>${ch.title}</h1><p>챕터 로딩 실패. <a href="https://github.com/tone7718-droid/Stock-Picker/blob/main/chapters/${ch.file}" target="_blank">GitHub에서 보기</a></p></div>`;
       }
     }
 
+    // Auto load first chapter
     window.onload = () => {
       loadChapter(chapters[0]);
       if (nav.firstChild) nav.firstChild.classList.add('active');
     };
 
+    // Hash navigation support (#03, #15 etc.)
     window.onhashchange = () => {
       const hash = location.hash.replace('#', '');
       const found = chapters.find(c => c.id === hash);
-      if (found) loadChapter(found);
+      if (found) {
+        loadChapter(found);
+        document.querySelectorAll('.nav a').forEach(el => el.classList.remove('active'));
+        const active = Array.from(nav.children).find(a => a.getAttribute('href') === location.hash);
+        if (active) active.classList.add('active');
+      }
     };
+
+    // Handle initial hash
+    if (window.location.hash) {
+      setTimeout(() => {
+        const hash = location.hash.replace('#', '');
+        const found = chapters.find(c => c.id === hash);
+        if (found) {
+          loadChapter(found);
+          document.querySelectorAll('.nav a').forEach(el => el.classList.remove('active'));
+          const active = Array.from(nav.children).find(a => a.getAttribute('href') === location.hash);
+          if (active) active.classList.add('active');
+        }
+      }, 50);
+    }
   </script>
 </body>
 </html>
