@@ -3,443 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>주식 초보자를 위한 밸류에이션 쉽게 배우기</title>
+  <meta name="description" content="PER, PBR, PSR, EV/EBITDA와 재무제표·사업 분석·위험관리를 쉽게 설명하는 초보자용 주식 밸류에이션 가이드">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://stock-picker-hazel.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="주식 밸류에이션 가이드">
+  <meta property="og:description" content="초보자를 위한 PER, PBR, PSR, EV/EBITDA 실전 입문서">
+  <meta property="og:url" content="https://stock-picker-hazel.vercel.app/">
+  <title>주식 밸류에이션 가이드 | 초보자용 입문서</title>
+  <script>tailwind = { config: { darkMode: 'class' } };</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;family=Noto+Serif+KR:wght@400;500&amp;display=swap');
-    
-    :root {
-      --reading-width: 720px;
-    }
-    
-    body {
-      font-family: 'Noto Sans KR', system-ui, sans-serif;
-    }
-    
-    .book-content {
-      font-family: 'Noto Serif KR', Georgia, serif;
-      font-size: 17.5px;
-      line-height: 1.8;
-      color: #1f2937;
-    }
-    
-    .book-content h1 { font-size: 2rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem; line-height: 1.2; }
-    .book-content h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.25rem; margin-bottom: 1rem; }
-    .book-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&display=swap');
+    :root { --reading-width: 720px; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans KR', system-ui, sans-serif; }
+    .book-content { font-family: 'Noto Serif KR', Georgia, serif; font-size: 17.5px; line-height: 1.85; color: #1f2937; }
+    .book-content h1 { font-size: 2rem; font-weight: 700; margin: 0 0 1.5rem; line-height: 1.25; }
+    .book-content h2 { font-size: 1.5rem; font-weight: 700; margin: 2.4rem 0 1rem; line-height: 1.35; }
+    .book-content h3 { font-size: 1.2rem; font-weight: 700; margin: 1.8rem 0 .75rem; }
     .book-content p { margin-bottom: 1.1rem; }
     .book-content ul, .book-content ol { margin-bottom: 1.1rem; padding-left: 1.5rem; }
-    .book-content li { margin-bottom: 0.4rem; }
-    .book-content blockquote {
-      border-left: 4px solid #3b82f6;
-      padding-left: 1.25rem;
-      margin: 1.5rem 0;
-      color: #4b5563;
-      font-style: italic;
-    }
-    .book-content table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-    }
-    .book-content th, .book-content td {
-      border: 1px solid #e5e7eb;
-      padding: 0.65rem 0.85rem;
-      text-align: left;
-    }
-    .book-content th { background: #f8fafc; font-weight: 600; }
-    
-    .chapter-container {
-      max-width: var(--reading-width);
-      margin: 0 auto;
-    }
-    
-    .sidebar {
-      transition: transform 0.2s ease;
-    }
-    
-    .nav-link {
-      transition: all 0.1s ease;
-    }
-    .nav-link:hover {
-      background-color: #f1f5f9;
-      color: #1e40af;
-    }
-    .nav-link.active {
-      background-color: #dbeafe;
-      color: #1e40af;
-      font-weight: 600;
-    }
-    
-    .reading-progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      background: linear-gradient(to right, #3b82f6, #1e40af);
-      z-index: 50;
-      transition: width 0.1s ease;
-    }
-    
-    @media (max-width: 1024px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-    }
-    
-    .book-content {
-      font-size: 17.5px;
-    }
-    
-    .control-btn {
-      transition: all 0.1s ease;
+    .book-content li { margin-bottom: .45rem; }
+    .book-content blockquote { border-left: 4px solid #3b82f6; padding: .8rem 0 .8rem 1.2rem; margin: 1.5rem 0; color: #4b5563; background: #eff6ff; }
+    .book-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; display: block; overflow-x: auto; }
+    .book-content th, .book-content td { border: 1px solid #e5e7eb; padding: .65rem .85rem; text-align: left; white-space: nowrap; }
+    .book-content th { background: #f8fafc; font-weight: 700; }
+    .book-content code { background: #f4f4f5; padding: .1rem .35rem; border-radius: .25rem; }
+    .chapter-container { max-width: var(--reading-width); margin: 0 auto; }
+    .sidebar { transition: transform .2s ease; }
+    .nav-link { transition: background-color .1s ease, color .1s ease; }
+    .nav-link:hover { background: #f1f5f9; color: #1e40af; }
+    .nav-link.active { background: #dbeafe; color: #1e40af; font-weight: 700; }
+    .reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(to right,#3b82f6,#1e40af); z-index: 70; transition: width .08s linear; }
+    .sidebar-overlay { display: none; }
+    .dark body { background: #18181b; color: #e4e4e7; }
+    .dark .surface { background: #27272a !important; border-color: #3f3f46 !important; }
+    .dark .book-content { color: #e4e4e7; }
+    .dark .book-content blockquote { color: #d4d4d8; background: #172554; }
+    .dark .book-content th { background: #3f3f46; }
+    .dark .book-content th, .dark .book-content td { border-color: #52525b; }
+    .dark .book-content code { background: #3f3f46; }
+    .dark .nav-link:hover { background: #3f3f46; color: #bfdbfe; }
+    .dark .nav-link.active { background: #1e3a8a; color: #dbeafe; }
+    @media (max-width: 1023px) {
+      .sidebar { display: flex !important; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; position: fixed; inset: 0; z-index: 45; background: rgba(0,0,0,.45); }
     }
   </style>
 </head>
-<body class="bg-zinc-100">
-  <!-- Top Bar -->
-  <div class="sticky top-0 z-40 bg-white border-b border-zinc-200">
-    <div class="max-w-screen-xl mx-auto">
-      <div class="flex items-center justify-between px-4 py-3">
-        <div class="flex items-center gap-x-3">
-          <div class="flex items-center gap-x-2">
-            <i class="fa-solid fa-book text-blue-600 text-2xl"></i>
-            <div>
-              <div class="font-semibold text-lg tracking-tight">주식 밸류에이션 가이드</div>
-              <div class="text-[10px] text-zinc-500 -mt-1">초보자를 위한 실전 입문서</div>
-            </div>
-          </div>
+<body class="bg-zinc-100 dark:bg-zinc-900">
+  <div id="progress-bar" class="reading-progress" style="width:0%"></div>
+
+  <header class="surface sticky top-0 z-40 bg-white border-b border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700">
+    <div class="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-3">
+      <a href="#chapter-01" class="flex items-center gap-2" aria-label="첫 장으로 이동">
+        <i class="fa-solid fa-book text-blue-600 text-2xl"></i>
+        <div>
+          <div class="font-semibold text-lg tracking-tight">주식 밸류에이션 가이드</div>
+          <div class="text-[10px] text-zinc-500 dark:text-zinc-400 -mt-1">초보자를 위한 교육용 입문서</div>
         </div>
-
-        <div class="flex items-center gap-x-2">
-          <!-- Font Size Controls -->
-          <div class="hidden sm:flex items-center bg-zinc-100 rounded-lg p-1 text-sm">
-            <button onclick="adjustFontSize(-1)" class="px-2.5 py-1 hover:bg-white rounded-md transition-colors">
-              <i class="fa-solid fa-minus text-xs"></i>
-            </button>
-            <span class="px-3 text-xs font-medium text-zinc-600" id="font-size-display">100%</span>
-            <button onclick="adjustFontSize(1)" class="px-2.5 py-1 hover:bg-white rounded-md transition-colors">
-              <i class="fa-solid fa-plus text-xs"></i>
-            </button>
-          </div>
-
-          <!-- Dark Mode -->
-          <button onclick="toggleDarkMode()" 
-                  class="flex items-center justify-center w-9 h-9 hover:bg-zinc-100 rounded-lg transition-colors text-zinc-600">
-            <i class="fa-solid fa-moon" id="theme-icon"></i>
-          </button>
-
-          <!-- Menu (mobile) -->
-          <button onclick="toggleSidebar()" 
-                  class="lg:hidden flex items-center justify-center w-9 h-9 hover:bg-zinc-100 rounded-lg transition-colors text-zinc-600">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-
-          <a href="https://github.com/tone7718-droid/Stock-Picker" target="_blank"
-             class="hidden sm:flex items-center gap-x-2 px-3 py-1.5 text-sm font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors">
-            <i class="fa-brands fa-github"></i>
-            <span class="text-xs">GitHub</span>
-          </a>
+      </a>
+      <div class="flex items-center gap-2">
+        <div class="hidden sm:flex items-center bg-zinc-100 dark:bg-zinc-700 rounded-lg p-1 text-sm">
+          <button type="button" onclick="adjustFontSize(-1)" class="px-2.5 py-1 rounded-md" aria-label="글자 작게"><i class="fa-solid fa-minus text-xs"></i></button>
+          <span class="px-3 text-xs font-medium" id="font-size-display">100%</span>
+          <button type="button" onclick="adjustFontSize(1)" class="px-2.5 py-1 rounded-md" aria-label="글자 크게"><i class="fa-solid fa-plus text-xs"></i></button>
         </div>
+        <button type="button" onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg" aria-label="화면 테마 전환"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
+        <button type="button" onclick="toggleSidebar()" class="lg:hidden w-9 h-9 rounded-lg" aria-label="목차 열기"><i class="fa-solid fa-bars"></i></button>
+        <a href="https://github.com/tone7718-droid/Stock-Picker" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm"><i class="fa-brands fa-github"></i><span>GitHub</span></a>
       </div>
     </div>
-  </div>
+  </header>
+
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
 
   <div class="flex max-w-screen-xl mx-auto">
-    <!-- Sidebar -->
-    <div id="sidebar" 
-         class="sidebar lg:sticky lg:top-[57px] lg:h-[calc(100vh-57px)] w-72 lg:w-64 bg-white border-r border-zinc-200 lg:block fixed lg:static inset-y-0 left-0 z-50 overflow-y-auto p-4 lg:p-3 hidden lg:flex flex-col">
-      
+    <aside id="sidebar" class="surface sidebar lg:sticky lg:top-[57px] lg:h-[calc(100vh-57px)] w-72 lg:w-64 bg-white dark:bg-zinc-800 border-r border-zinc-200 dark:border-zinc-700 fixed lg:static inset-y-0 left-0 z-50 overflow-y-auto p-4 lg:p-3 flex-col">
       <div class="lg:hidden flex justify-between items-center mb-3 px-1">
         <span class="font-semibold text-sm">목차</span>
-        <button onclick="toggleSidebar()" class="text-zinc-400 hover:text-zinc-600">
-          <i class="fa-solid fa-times text-lg"></i>
-        </button>
+        <button type="button" onclick="closeSidebar()" aria-label="목차 닫기"><i class="fa-solid fa-times text-lg"></i></button>
       </div>
-
       <div class="text-[11px] font-medium text-zinc-400 tracking-widest px-3 mb-2 hidden lg:block">CHAPTERS</div>
-      
-      <div id="nav" class="flex-1 text-sm space-y-0.5">
-        <!-- Populated by JS -->
-      </div>
+      <nav id="nav" class="flex-1 text-sm space-y-0.5" aria-label="전자책 목차"></nav>
+      <div class="pt-4 mt-auto border-t border-zinc-200 dark:border-zinc-700 text-[10px] text-zinc-400 px-3 hidden lg:block">총 16챕터 · 교육 목적의 밸류에이션 입문서</div>
+    </aside>
 
-      <div class="pt-4 mt-auto border-t text-[10px] text-zinc-400 px-3 hidden lg:block">
-        총 16챕터 · 중학생도 이해할 수 있는 실전 가이드
-      </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="flex-1 min-w-0 px-4 lg:px-8 py-8 lg:py-10">
+    <main class="flex-1 min-w-0 px-4 lg:px-8 py-8 lg:py-10">
       <div class="max-w-[var(--reading-width)] mx-auto">
-        
-        <!-- Chapter Header -->
-        <div id="chapter-header" class="mb-6 hidden">
-          <div class="flex items-center gap-3 text-sm">
-            <span id="chapter-number" 
-                  class="inline-flex items-center justify-center w-6 h-6 rounded bg-blue-100 text-blue-700 text-xs font-bold"></span>
-            <span id="chapter-title" class="font-medium text-zinc-500"></span>
-          </div>
+        <div id="chapter-header" class="mb-6 hidden items-center gap-3 text-sm">
+          <span id="chapter-number" class="inline-flex items-center justify-center w-7 h-7 rounded bg-blue-100 text-blue-700 text-xs font-bold"></span>
+          <span id="chapter-title" class="font-medium text-zinc-500 dark:text-zinc-400"></span>
+          <button type="button" onclick="copyChapterLink()" class="ml-auto text-xs text-blue-600" aria-label="현재 챕터 링크 복사"><i class="fa-solid fa-link mr-1"></i>링크 복사</button>
         </div>
-
-        <!-- Content -->
-        <div id="content" class="book-content prose prose-zinc max-w-none">
-          <!-- Dynamic content loaded here -->
-          <div class="text-center py-12 text-zinc-400">
-            <i class="fa-solid fa-book-open text-4xl mb-4 block"></i>
-            <p class="text-sm">왼쪽 목차에서 챕터를 선택해주세요</p>
-          </div>
+        <article id="content" class="book-content max-w-none" aria-live="polite"></article>
+        <div id="chapter-nav" class="hidden mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-700 items-center justify-between text-sm">
+          <button type="button" onclick="goToPrevChapter()" class="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600"><i class="fa-solid fa-arrow-left mr-2"></i>이전 챕터</button>
+          <button type="button" onclick="goToNextChapter()" class="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600">다음 챕터<i class="fa-solid fa-arrow-right ml-2"></i></button>
         </div>
-
-        <!-- Navigation -->
-        <div id="chapter-nav" class="hidden mt-12 pt-6 border-t flex items-center justify-between text-sm">
-          <button onclick="goToPrevChapter()" 
-                  class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white border text-zinc-600 hover:text-zinc-900 transition-colors">
-            <i class="fa-solid fa-arrow-left"></i>
-            <span>이전 챕터</span>
-          </button>
-          <button onclick="goToNextChapter()" 
-                  class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white border text-zinc-600 hover:text-zinc-900 transition-colors">
-            <span>다음 챕터</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-
-        <div class="text-center mt-10 text-xs text-zinc-400">
-          GitHub에 저장된 Markdown을 기반으로 표시됩니다
-        </div>
+        <p class="text-center mt-10 text-xs text-zinc-400">이 자료는 교육 목적이며 특정 종목이나 투자 행동을 권하지 않습니다.</p>
       </div>
-    </div>
+    </main>
   </div>
 
-  <!-- Reading Progress -->
-  <div id="progress-bar" class="reading-progress" style="width: 0%"></div>
-
   <script>
-    // Tailwind script
-    function initTailwind() {
-      document.documentElement.style.setProperty('--reading-width', '720px');
-    }
-
     const chapters = [
-      { id: '01', num: '01', title: '서론', file: '01-서론.md' },
-      { id: '02', num: '02', title: '기본 개념', file: '02-기본개념.md' },
-      { id: '03', num: '03', title: 'PER', file: '03-PER.md' },
-      { id: '04', num: '04', title: 'PBR', file: '04-PBR.md' },
-      { id: '05', num: '05', title: 'PSR', file: '05-PSR.md' },
-      { id: '06', num: '06', title: 'EV/EBITDA', file: '06-EV-EBITDA.md' },
-      { id: '07', num: '07', title: '지표 조합하기', file: '07-조합하기.md' },
-      { id: '08', num: '08', title: '실전 예시', file: '08-실전예시.md' },
-      { id: '09', num: '09', title: '함정', file: '09-함정.md' },
-      { id: '10', num: '10', title: '체크리스트', file: '10-체크리스트.md' },
-      { id: '11', num: '11', title: '재무제표', file: '11-재무제표-초보자.md' },
-      { id: '12', num: '12', title: '정성적 분석', file: '12-정성적-분석.md' },
-      { id: '13', num: '13', title: '위험 관리', file: '13-위험관리와-포지션.md' },
-      { id: '14', num: '14', title: '매수와 매도', file: '14-매수와-매도.md' },
-      { id: '15', num: '15', title: '심리적 실수', file: '15-심리적-실수.md' },
-      { id: '16', num: '16', title: '투자 원칙 10가지', file: '16-투자-원칙.md' }
-    ];
+      ['01','서론','01-서론.md'],['02','기본 개념','02-기본개념.md'],['03','PER','03-PER.md'],['04','PBR','04-PBR.md'],
+      ['05','PSR','05-PSR.md'],['06','EV/EBITDA','06-EV-EBITDA.md'],['07','지표 조합하기','07-조합하기.md'],['08','실전 예시','08-실전예시.md'],
+      ['09','함정','09-함정.md'],['10','체크리스트','10-체크리스트.md'],['11','재무제표','11-재무제표-초보자.md'],['12','정성적 분석','12-정성적-분석.md'],
+      ['13','위험 관리','13-위험관리와-포지션.md'],['14','판단 기준','14-매수와-매도.md'],['15','심리적 실수','15-심리적-실수.md'],['16','투자 원칙 10가지','16-투자-원칙.md']
+    ].map(([id,title,file]) => ({id,num:id,title,file}));
 
+    const CHAPTER_BASE = './chapters/';
     let currentChapterIndex = 0;
-    let fontSizeLevel = 0;
-
-    const RAW_BASE = 'https://raw.githubusercontent.com/tone7718-droid/Stock-Picker/main/chapters/';
+    let fontSizeLevel = Number(localStorage.getItem('fontSizeLevel') || 0);
 
     function renderSidebar() {
       const nav = document.getElementById('nav');
       nav.innerHTML = '';
-      
-      chapters.forEach((ch, index) => {
+      chapters.forEach((ch,index) => {
         const a = document.createElement('a');
-        a.href = '#';
-        a.className = `nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm cursor-pointer`;
-        a.innerHTML = `
-          <span class="font-mono text-xs text-zinc-400 w-5">${ch.num}</span>
-          <span class="flex-1">${ch.title}</span>
-        `;
-        
-        a.onclick = (e) => {
-          e.preventDefault();
-          loadChapter(index);
-        };
-        
+        a.href = `#chapter-${ch.id}`;
+        a.className = 'nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg';
+        a.innerHTML = `<span class="font-mono text-xs text-zinc-400 w-5">${ch.num}</span><span class="flex-1">${ch.title}</span>`;
+        a.addEventListener('click', closeSidebar);
         nav.appendChild(a);
       });
     }
 
-    async function loadChapter(index) {
+    async function loadChapter(index, updateHash = true) {
+      if (index < 0 || index >= chapters.length) return;
       currentChapterIndex = index;
       const ch = chapters[index];
-      
       const content = document.getElementById('content');
-      content.innerHTML = `
-        <div class="flex items-center justify-center py-16">
-          <div class="flex items-center gap-3 text-zinc-400 text-sm">
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>불러오는 중...</span>
-          </div>
-        </div>
-      `;
-
+      content.innerHTML = '<div class="text-center py-16 text-zinc-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>불러오는 중...</div>';
       try {
-        const res = await fetch(RAW_BASE + ch.file);
-        if (!res.ok) throw new Error();
-        
+        const res = await fetch(CHAPTER_BASE + encodeURIComponent(ch.file), { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const md = await res.text();
-        const html = marked.parse(md);
-        
-        content.innerHTML = `
-          <div class="chapter-container">
-            ${html}
-          </div>
-        `;
-        
-        // Update header
+        const safeHtml = DOMPurify.sanitize(marked.parse(md), { USE_PROFILES: { html: true } });
+        content.innerHTML = `<div class="chapter-container">${safeHtml}</div>`;
         document.getElementById('chapter-header').classList.remove('hidden');
         document.getElementById('chapter-header').classList.add('flex');
-        document.getElementById('chapter-number').textContent = ch.num;
-        document.getElementById('chapter-title').textContent = ch.title;
-        
-        // Update active state
-        updateActiveNav(index);
-        
-        // Show nav buttons
         document.getElementById('chapter-nav').classList.remove('hidden');
         document.getElementById('chapter-nav').classList.add('flex');
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // Update progress
-        updateProgress();
-        
-      } catch (e) {
-        content.innerHTML = `
-          <div class="py-8 text-center">
-            <p class="text-red-500 mb-2">챕터를 불러오지 못했습니다.</p>
-            <a href="https://github.com/tone7718-droid/Stock-Picker/blob/main/chapters/${ch.file}" target="_blank"
-               class="text-blue-600 underline text-sm">GitHub에서 원문 보기 →</a>
-          </div>
-        `;
+        document.getElementById('chapter-number').textContent = ch.num;
+        document.getElementById('chapter-title').textContent = ch.title;
+        document.title = `${ch.title} | 주식 밸류에이션 가이드`;
+        updateActiveNav(index);
+        if (updateHash && location.hash !== `#chapter-${ch.id}`) history.pushState(null,'',`#chapter-${ch.id}`);
+        window.scrollTo({top:0,behavior:'smooth'});
+        updateProgressBar();
+      } catch (error) {
+        content.innerHTML = `<div class="py-10 text-center"><p class="text-red-500 mb-3">챕터를 불러오지 못했습니다.</p><button onclick="loadChapter(${index},false)" class="text-blue-600 underline">다시 시도</button></div>`;
+        console.error(error);
       }
+    }
+
+    function indexFromHash() {
+      const match = location.hash.match(/^#chapter-(\d{2})$/);
+      const index = match ? chapters.findIndex(ch => ch.id === match[1]) : 0;
+      return index >= 0 ? index : 0;
     }
 
     function updateActiveNav(index) {
-      const links = document.querySelectorAll('#nav a');
-      links.forEach((link, i) => {
+      document.querySelectorAll('#nav a').forEach((link,i) => {
         link.classList.toggle('active', i === index);
+        if (i === index) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
       });
     }
 
-    function goToPrevChapter() {
-      if (currentChapterIndex > 0) {
-        loadChapter(currentChapterIndex - 1);
-      }
+    function goToPrevChapter() { if (currentChapterIndex > 0) location.hash = `chapter-${chapters[currentChapterIndex-1].id}`; }
+    function goToNextChapter() { if (currentChapterIndex < chapters.length-1) location.hash = `chapter-${chapters[currentChapterIndex+1].id}`; }
+
+    function updateProgressBar() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const percent = max > 0 ? (window.scrollY / max) * 100 : 0;
+      document.getElementById('progress-bar').style.width = Math.min(percent,100) + '%';
     }
 
-    function goToNextChapter() {
-      if (currentChapterIndex < chapters.length - 1) {
-        loadChapter(currentChapterIndex + 1);
-      }
+    function applyFontSize() {
+      fontSizeLevel = Math.max(-2, Math.min(3, fontSizeLevel));
+      const base = 17.5;
+      const size = base + fontSizeLevel * 1.5;
+      document.getElementById('content').style.fontSize = `${size}px`;
+      document.getElementById('font-size-display').textContent = `${Math.round(size/base*100)}%`;
+      localStorage.setItem('fontSizeLevel', String(fontSizeLevel));
     }
+    function adjustFontSize(delta) { fontSizeLevel += delta; applyFontSize(); }
 
-    function updateProgress() {
-      const progress = document.getElementById('progress-bar');
-      
-      window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        progress.style.width = Math.min(scrollPercent, 100) + '%';
-      });
-    }
-
-    function adjustFontSize(delta) {
-      fontSizeLevel = Math.max(-2, Math.min(3, fontSizeLevel + delta));
-      
-      const content = document.getElementById('content');
-      const baseSize = 17.5;
-      const newSize = baseSize + (fontSizeLevel * 1.5);
-      
-      content.style.fontSize = newSize + 'px';
-      
-      const display = document.getElementById('font-size-display');
-      if (display) display.textContent = Math.round((newSize / baseSize) * 100) + '%';
-    }
-
-    function toggleDarkMode() {
-      const html = document.documentElement;
+    function setTheme(theme) {
+      const dark = theme === 'dark';
+      document.documentElement.classList.toggle('dark', dark);
       const icon = document.getElementById('theme-icon');
-      
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
-        localStorage.setItem('theme', 'light');
-      } else {
-        html.classList.add('dark');
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-        localStorage.setItem('theme', 'dark');
-      }
+      icon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      localStorage.setItem('theme', theme);
     }
+    function toggleDarkMode() { setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'); }
 
     function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('open');
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-overlay').classList.toggle('open');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('open');
     }
 
-    function initTheme() {
-      const savedTheme = localStorage.getItem('theme');
-      const icon = document.getElementById('theme-icon');
-      
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        icon.classList.add('fa-sun');
-        icon.classList.remove('fa-moon');
-      } else {
-        icon.classList.add('fa-moon');
-      }
-    }
-
-    function initKeyboardShortcuts() {
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          goToPrevChapter();
-        } else if (e.key === 'ArrowRight') {
-          goToNextChapter();
-        }
-      });
+    async function copyChapterLink() {
+      try { await navigator.clipboard.writeText(location.href); alert('현재 챕터 링크를 복사했습니다.'); }
+      catch { prompt('아래 주소를 복사하세요.', location.href); }
     }
 
     function init() {
-      initTailwind();
       renderSidebar();
-      initTheme();
-      initKeyboardShortcuts();
-      
-      // Load first chapter
-      loadChapter(0);
-      
-      // Close sidebar on mobile when clicking content
-      document.getElementById('content').addEventListener('click', () => {
-        if (window.innerWidth < 1024) {
-          document.getElementById('sidebar').classList.remove('open');
-        }
+      applyFontSize();
+      const saved = localStorage.getItem('theme');
+      setTheme(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+      window.addEventListener('scroll', updateProgressBar, {passive:true});
+      window.addEventListener('hashchange', () => loadChapter(indexFromHash(), false));
+      document.addEventListener('keydown', event => {
+        if (event.target.matches('input,textarea,select')) return;
+        if (event.key === 'ArrowLeft') goToPrevChapter();
+        if (event.key === 'ArrowRight') goToNextChapter();
+        if (event.key === 'Escape') closeSidebar();
       });
+      if (!location.hash) history.replaceState(null,'','#chapter-01');
+      loadChapter(indexFromHash(), false);
     }
 
-    // Make functions global for inline onclick
-    window.adjustFontSize = adjustFontSize;
-    window.toggleDarkMode = toggleDarkMode;
-    window.toggleSidebar = toggleSidebar;
-    window.goToPrevChapter = goToPrevChapter;
-    window.goToNextChapter = goToNextChapter;
-
-    window.onload = init;
+    Object.assign(window,{adjustFontSize,toggleDarkMode,toggleSidebar,closeSidebar,goToPrevChapter,goToNextChapter,copyChapterLink,loadChapter});
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
